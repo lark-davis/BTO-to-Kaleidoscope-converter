@@ -25,7 +25,7 @@ Kaleidoscope uses fixed column header-names that cannot be changed in the free v
 
 Many of the columns from BTO Pipeline's results have been removed. Certain columns share the same names, like 'TIME'. 
 
-# COLUMNS IN CONVERTED FILE
+## COLUMNS IN CONVERTED FILE
 
 INDIR
 
