@@ -23,7 +23,7 @@ Kaleidoscope uses fixed column header-names that cannot be changed in the free v
 
 'NOTES' = 'BATCH.NAME'
 
-Many of the columns from BTO Pipeline's results have been removed. Certain columns share the same names, like 'TIME'. 
+Certain columns share the same names, like 'TIME', 'LATITUDE', 'LONGITDUDE', etc. Note that many of the columns from BTO Pipeline's results have been removed. 
 
 ## COLUMNS IN CONVERTED FILE
 
