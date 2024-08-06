@@ -1,6 +1,6 @@
 #############################################################
 #
-# DESCRIPTION: This script converts a BTO-results file (.csv) to a file that can be opened and analysed in Kaleidoscope.
+# DESCRIPTION: This script converts a BTO Acoustic Pipeline results file (.csv) to a file that can be opened and analysed in Kaleidoscope.
 #
 # TO RUN: Place your BTO results file (.csv), this script and the sound files that were analysed by BTO in the same folder. Edit line 33 in this script to be the name of your BTO results file. Run the script. A file with your converted results will be created in the working directory, called Converted_BTO_results.csv. Open this file in Kaleidoscope as you would a normal results file (meta.csv): File > Open Results. 
 # 
