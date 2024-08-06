@@ -23,6 +23,38 @@ Kaleidoscope uses fixed column header-names that cannot be changed in the free v
 
 'NOTES' = 'BATCH.NAME'
 
+Many of the columns from BTO Pipeline's results have been removed. Certain columns share the same names, like 'TIME'. 
+
+# COLUMNS IN CONVERTED FILE
+
+INDIR
+
+IN FILE*
+
+DATE
+
+TIME
+
+LATITUDE
+
+LONGITUDE
+
+FIRMWARE
+
+PREFIX
+
+NOTES
+
+AUTO ID
+
+MATCH RATIO
+
+MANUAL ID
+
+REVIEW USERID
+
+INPATHMD5
+
 ## NOTE
 If you can't see these columns in Kaleidoscope, choose to show them in File > Edit columns. 
 
