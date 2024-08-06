@@ -4,7 +4,7 @@
 This script converts a BTO Acoustic Pipeline results file (.csv) to a file that can be opened and analysed in Kaleidoscope.
 
 ## TO RUN
-Place your BTO Pipeline results file (.csv), this script and the sound files that were analysed by BTO Pipeline in the same folder. Run this script from that location. A file with your converted results will be created in the working directory, called Converted_BTO_results.csv. Open this file in Kaleidoscope as you would a normal results file (meta.csv): File > Open Results. 
+Place your BTO Pipeline results file (.csv), this script and the sound files that were analysed by BTO Pipeline in the same folder. Edit line 33 in the script to be the name of your BTO results file. Run the script. A file with your converted results will be created in the working directory, called Converted_BTO_results.csv. Open this file in Kaleidoscope as you would a normal results file (meta.csv): File > Open Results. 
  
 ## COLUMN MAPPING
 Kaleidoscope uses fixed column header-names that cannot be changed in the free version. Therefore this script re-uses those pre-existing column names and maps them to BTO's column names as follows: 
