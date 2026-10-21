@@ -1,26 +1,28 @@
 #############################################################
 #
-# DESCRIPTION: This script converts a BTO Acoustic Pipeline results file (.csv) to a file that can be opened and analysed in Kaleidoscope.
+# DESCRIPTION: This script converts a BTO-results file (.csv) to a file that can be opened and analysed in Kaleidoscope.
 #
-# TO RUN: Place your BTO results file (.csv), this script and the sound files that were analysed by BTO in the same folder. Edit line 33 in this script to be the name of your BTO results file. Run the script. A file with your converted results will be created in the working directory, called Converted_BTO_results.csv. Open this file in Kaleidoscope as you would a normal results file (meta.csv): File > Open Results. 
+# TO RUN: Place your BTO results file (.csv), this script and the sound files that were analysed by BTO in the same folder. Run this script from that location. A file with your converted results will be created in the working directory, called Converted_BTO_results.csv. Open this file in Kaleidoscope as you would a normal results file (meta.csv): File > Open Results. 
 # 
-# COLUMN MAPPING: Kaleidoscope uses fixed column header-names that cannot be changed in the free version. Therefore this script re-uses those pre-existing column names and maps them to BTO's column names as follows: 
-# 'IN FILE*' = 'ORIGINAL.FILE.NAME', 'DATE' = 'ACTUAL.DATE', 'AUTO ID' = 'SPECIES', 'FIRMWARE' = 'SPECIES.GROUP', 'PREFIX' = 'CALL.TYPE','MATCH RATIO' = 'PROBABILITY', 'NOTES' = 'BATCH.NAME'
-# NOTE: If you can't see these columns in Kaleidoscope, choose to show them in File > Edit columns. 
+# NOTE: If you can't see all the columns in Kaleidoscope, choose to show them in File > Edit columns. 
 #
 # AUTHOR: Lark Davis, lark.isadora.davis@gmail.com
-# REVISION HISTORY: v 1.0
+# REVISION HISTORY: v 1.4
+# 250908 DATE-12 added
+# 250910 removed duplicate files from output, removed dbplyr and added dplyr package.
+# 250926 Changed column names to match BTO
+# 251117 Changed line 46 to ORIGINAL.FILE.NAME from RECORDING.FILE.NAME for BatLogger. BTO creates unique file names from metadata for BatLogger, which led to duplicates.
 #
 #############################################################
 
 # Install required packages. This is only necessary the first time you run the script and does need to be run every time.
 install.packages("this.path")
-install.packages("dbplyr")
+install.packages("dplyr")
 install.packages("tibble")
 
 # Load package libraries. This needs to be done every time you start a new RStudio session. 
 library(this.path)
-library(dbplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(tibble)
 
 # Set the working directory to the current folder where this script is located.
@@ -40,49 +42,57 @@ file_location <- this.path::here()
 # Build new data frame
 converted_file <- file %>%
   
+  # Remove duplicate rows
+  distinct(ORIGINAL.FILE.NAME, .keep_all = TRUE) %>%
+  
   # Remove unnecessary columns from BTO
-  dplyr::select(-c('RECORDING.FILE.NAME', 'ORIGINAL.FILE.PART', 'SCIENTIFIC.NAME' ,'ENGLISH.NAME', 'PROJECT.NAME', 'UPLOAD.KEY', 'USER.ID', 'CLASSIFIER.NAME', 'SURVEY.DATE', 'WARNINGS' )) %>%
+  select(-c('RECORDING.FILE.NAME', 'ORIGINAL.FILE.PART', 'SCIENTIFIC.NAME' ,'ENGLISH.NAME', 'PROJECT.NAME', 'UPLOAD.KEY', 'USER.ID', 'CLASSIFIER.NAME', 'WARNINGS' )) %>%
   
   # Rename existing columns to match Kaleidoscope
-  dplyr::rename('IN FILE*' = 'ORIGINAL.FILE.NAME', 'DATE' = 'ACTUAL.DATE', 'AUTO ID' = 'SPECIES', 'FIRMWARE' = 'SPECIES.GROUP', 'PREFIX' = 'CALL.TYPE','MATCH RATIO' = 'PROBABILITY', 'NOTES' = 'BATCH.NAME' ) %>%
+  rename('IN FILE*' = 'ORIGINAL.FILE.NAME', 'DATE' = 'ACTUAL.DATE', 'DATE-12' = 'SURVEY.DATE', 'AUTO ID' = 'SPECIES', 'Species group' = 'SPECIES.GROUP', 'Call type' = 'CALL.TYPE','Probability' = 'PROBABILITY', 'NOTES' = 'BATCH.NAME' ) %>%
   
   # Add and move columns required by Kaleidoscope
-  dplyr::mutate('INDIR'= file_location,
-                .before='IN FILE*') %>%
+  mutate('INDIR'= file_location,
+         .before='IN FILE*') %>%
   
-  dplyr::relocate('DATE',
-                .after='IN FILE*') %>%
+  relocate('DATE',
+           .after='IN FILE*') %>%
   
-  dplyr::relocate('TIME',
-                  .after='DATE') %>%
+  relocate('DATE-12',
+           .after='DATE') %>%
   
-  dplyr::relocate('FIRMWARE',
-                .after='LONGITUDE') %>%
+  relocate('TIME',
+           .after='DATE') %>%
   
-  dplyr::relocate('PREFIX',
-                  .after='FIRMWARE') %>%
+  relocate('Species group',
+           .after='LONGITUDE') %>%
   
-  dplyr::relocate('NOTES',
-                .after='PREFIX') %>%
+  relocate('Call type',
+           .after='Species group') %>%
   
-  dplyr::relocate('AUTO ID',
-                  .after='NOTES') %>%
+  relocate('NOTES',
+           .after='Call type') %>%
   
-  dplyr::relocate('MATCH RATIO',
-                  .after='AUTO ID') %>%
+  relocate('AUTO ID',
+           .after='NOTES') %>%
   
-  dplyr::mutate('MANUAL ID'=c(''),
-                .after='MATCH RATIO') %>%
+  relocate('Probability',
+           .after='AUTO ID') %>%
   
-  dplyr::mutate('REVIEW USERID'=c(''),
-                .after='MANUAL ID') %>%
+  mutate('MANUAL ID'=c(''),
+         .after='Probability') %>%
+  
+  mutate('REVIEW USERID'=c(''),
+         .after='MANUAL ID') %>%
+  
+  mutate('INPATHMD5'=c(''),
+         .after='REVIEW USERID')
 
-  dplyr::mutate('INPATHMD5'=c(''),
-                .after='REVIEW USERID')
+
 
 # Create new meta-file for Kaleidoscope and place it in the same folder as this script
 write.csv(converted_file, "Converted_BTO_results.csv", row.names = FALSE)
 print("Your results are now ready, they can be found in the file 'Converted_BTO_results.csv' in the working directory. Happy analysing!")
 
 
-  
+
